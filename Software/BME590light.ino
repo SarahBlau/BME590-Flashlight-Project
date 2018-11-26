@@ -1,25 +1,30 @@
 // pre processing directives
 // PWM pins are 3, 5, 6, 9, 10, 11
 #define  FLASHING_RATE 2
-#define BUTTON_PIN 2 // or 2 or 3?
-#define LED_PIN 9 // change?
-#define BATTERY_PIN 11
+#define BUTTON_PIN 2
+#define BATTERY_READ_PIN 1 // A1? 
+#define LED_PIN 9
+#define BATTERY_LED_PIN 11
+
 
 // global variables
 bool button = false;
 int mode = 0;
-int battery = 0;
 int interval = 1000 / FLASHING_RATE;
 unsigned long previousMillis = 0;
 int ledState = LOW;
+int ledStateBatt = LOW;
 int lastButtonTime = 0; // unsigned long?
 int debounceTime = 100; // unsigned long?
+float medBatteryVolt = 4.5;
+float lowBatteryVolt = 4.0;
 
 void setup() {
   // put your setup code here, to run once:
   pinMode(BUTTON_PIN, INPUT);
+  pinMode(BATTERY_READ_PIN, INPUT);
   pinMode(LED_PIN, OUTPUT);
-  pinMode(BATTERY_PIN, OUTPUT);
+  pinMode(BATTERY_LED_PIN, OUTPUT);
   attachInterrupt(digitalPinToInterrupt(2), detect_button, FALLING);
 }
 
@@ -40,7 +45,6 @@ void detect_button(){
 void detect_press() {
   if (button) {
     mode += 1;
-    Serial.print("Button pressed");
     button = false;
   }
   if (mode == 6) {
@@ -78,6 +82,36 @@ void shine_LED() {
       break;
   }
 }
+
 void battery_life() {
-  //use timer to flash
+  float batteryVolt = analogRead(BATTERY_READ_PIN); // is float the right data type?
+  unsigned long previousMillisBatt = 0;
+  
+  if(batteryVolt <= medBatteryVolt && batteryVolt > lowBatteryVolt){
+    // slow flashing
+    if (currentMillis - previousMillisBatt >= 1000) {
+        previousMillisBatt = currentMillis;
+        if (ledStateBatt == LOW) {
+          ledStateBatt = HIGH;
+        }
+        else {
+          ledStateBatt = LOW;
+        }
+    }
+    digitalWrite(BATTERY_LED_PIN, ledStateBatt);
+  }
+  
+  if(batteryVolt <= lowBatteryVolt){
+    // fast flashing
+    if (currentMillis - previousMillisBatt >= interval) {
+        previousMillisBatt = currentMillis;
+        if (ledStateBatt == LOW) {
+          ledStateBatt = HIGH;
+        }
+        else {
+          ledStateBatt = LOW;
+        }
+    }
+    digitalWrite(BATTERY_LED_PIN, ledStateBatt);
+  }
 }
