@@ -7389,8 +7389,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <instance part="GND7" gate="1" x="-2.54" y="73.66">
 <attribute name="VALUE" x="-5.08" y="71.12" size="1.778" layer="96"/>
 </instance>
-<instance part="GND8" gate="1" x="48.26" y="58.42">
-<attribute name="VALUE" x="45.72" y="55.88" size="1.778" layer="96"/>
+<instance part="GND8" gate="1" x="50.8" y="66.04">
+<attribute name="VALUE" x="48.26" y="63.5" size="1.778" layer="96"/>
 </instance>
 <instance part="R3" gate="G$1" x="38.1" y="27.94" rot="R90">
 <attribute name="NAME" x="36.6014" y="24.13" size="1.778" layer="95" rot="R90"/>
@@ -7439,9 +7439,8 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 </segment>
 <segment>
 <pinref part="GND8" gate="1" pin="GND"/>
-<wire x1="48.26" y1="60.96" x2="48.26" y2="68.58" width="0.1524" layer="91"/>
 <pinref part="U$1" gate="G$1" pin="GND2"/>
-<wire x1="48.26" y1="68.58" x2="55.88" y2="68.58" width="0.1524" layer="91"/>
+<wire x1="50.8" y1="68.58" x2="55.88" y2="68.58" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$2" class="0">
@@ -7471,7 +7470,11 @@ http://www.ladyada.net/library/pcb/eaglelibrary.html</description>
 <segment>
 <pinref part="P+2" gate="1" pin="+5V"/>
 <pinref part="S1" gate="G$1" pin="S"/>
-<wire x1="33.02" y1="60.96" x2="33.02" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="33.02" y1="60.96" x2="33.02" y2="55.88" width="0.1524" layer="91"/>
+<pinref part="U$1" gate="G$1" pin="A1"/>
+<wire x1="33.02" y1="55.88" x2="33.02" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="55.88" y1="55.88" x2="33.02" y2="55.88" width="0.1524" layer="91"/>
+<junction x="33.02" y="55.88"/>
 </segment>
 </net>
 <net name="N$3" class="0">
