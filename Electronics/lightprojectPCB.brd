@@ -157,9 +157,9 @@
 <board>
 <plain>
 <wire x1="0" y1="2.54" x2="63.48" y2="2.54" width="0" layer="20"/>
-<wire x1="63.48" y1="2.54" x2="63.48" y2="84.76" width="0" layer="20"/>
-<wire x1="63.48" y1="84.76" x2="0" y2="84.76" width="0" layer="20"/>
-<wire x1="0" y1="84.76" x2="0" y2="2.54" width="0" layer="20"/>
+<wire x1="63.48" y1="2.54" x2="63.48" y2="74.6" width="0" layer="20"/>
+<wire x1="63.48" y1="74.6" x2="0" y2="74.6" width="0" layer="20"/>
+<wire x1="0" y1="74.6" x2="0" y2="2.54" width="0" layer="20"/>
 <text x="45.72" y="50.8" size="1.778" layer="112" rot="R90">Sarah Blau</text>
 </plain>
 <libraries>
