@@ -2,7 +2,7 @@
 // PWM pins are 3, 5, 6, 9, 10, 11
 #define  FLASHING_RATE 2
 #define BUTTON_PIN 2
-#define BATTERY_READ_PIN 1 // A1? 
+#define BATTERY_READ_PIN A1 // A1? 
 #define LED_PIN 9
 #define BATTERY_LED_PIN 11
 
@@ -15,40 +15,58 @@ unsigned long previousMillis = 0;
 int ledState = LOW;
 int ledStateBatt = LOW;
 int lastButtonTime = 0; // unsigned long?
-int debounceTime = 100; // unsigned long?
-float medBatteryVolt = 4.5;
-float lowBatteryVolt = 4.0;
+int debounceTime = 1000; // unsigned long?
+float medBatteryVolt = (4.5/5)*1023;
+float lowBatteryVolt = (4.0/5)*1023;
+unsigned long previousMillisBatt = 0;
 
 void setup() {
   // put your setup code here, to run once:
+  Serial.begin(9600);
   pinMode(BUTTON_PIN, INPUT);
   pinMode(BATTERY_READ_PIN, INPUT);
   pinMode(LED_PIN, OUTPUT);
   pinMode(BATTERY_LED_PIN, OUTPUT);
-  attachInterrupt(digitalPinToInterrupt(2), detect_button, FALLING);
+  attachInterrupt(digitalPinToInterrupt(2), detect_button, RISING); //when pin 2 goes from high to low do interrupt
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
+  //Serial.println(digitalRead(BUTTON_PIN));
+  debounce();
   detect_press();
   shine_LED();
   battery_life();
 }
 
 void detect_button(){
-  if ((millis() - lastButtonTime) > debounceTime){
+  
     button = true;
+    //Serial.print(millis()-lastButtonTime);
+    
+  
+  
+  //Serial.print(button);
+}
+
+void debounce(){
+  if ((millis() - lastButtonTime) < debounceTime){
+    button = false;
+  }
+  else{
     lastButtonTime = millis();
   }
 }
 
 void detect_press() {
-  if (button) {
+  if (button == true) {
     mode += 1;
+    //Serial.print(mode);
     button = false;
   }
   if (mode == 6) {
     mode = 1;
+    //Serial.print(mode);
   }
 }
 
@@ -58,7 +76,7 @@ void shine_LED() {
       analogWrite(LED_PIN, 255);
       break;
     case 2:
-      analogWrite(LED_PIN, 175);
+      analogWrite(LED_PIN, 150);
       break;
     case 3:
       analogWrite(LED_PIN, 75);
@@ -84,13 +102,14 @@ void shine_LED() {
 }
 
 void battery_life() {
-  float batteryVolt = analogRead(BATTERY_READ_PIN); // is float the right data type?
-  unsigned long previousMillisBatt = 0;
+  int batteryVolt = analogRead(BATTERY_READ_PIN); 
   
-  if(batteryVolt <= medBatteryVolt && batteryVolt > lowBatteryVolt){
+  unsigned long currentMillisBatt = millis();
+  
+  if(float(batteryVolt) <= medBatteryVolt && float(batteryVolt) > lowBatteryVolt){
     // slow flashing
-    if (currentMillis - previousMillisBatt >= 1000) {
-        previousMillisBatt = currentMillis;
+    if (currentMillisBatt - previousMillisBatt >= 1000) {
+        previousMillisBatt = currentMillisBatt;
         if (ledStateBatt == LOW) {
           ledStateBatt = HIGH;
         }
@@ -101,10 +120,10 @@ void battery_life() {
     digitalWrite(BATTERY_LED_PIN, ledStateBatt);
   }
   
-  if(batteryVolt <= lowBatteryVolt){
+  if(float(batteryVolt) <= lowBatteryVolt){
     // fast flashing
-    if (currentMillis - previousMillisBatt >= interval) {
-        previousMillisBatt = currentMillis;
+    if (currentMillisBatt - previousMillisBatt >= interval) {
+        previousMillisBatt = currentMillisBatt;
         if (ledStateBatt == LOW) {
           ledStateBatt = HIGH;
         }
