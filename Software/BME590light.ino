@@ -15,10 +15,11 @@ unsigned long previousMillis = 0;
 int ledState = LOW;
 int ledStateBatt = LOW;
 int lastButtonTime = 0; // unsigned long?
-int debounceTime = 1000; // unsigned long?
+int debounceTime = 250; // unsigned long?
 float medBatteryVolt = (4.5/5)*1023;
 float lowBatteryVolt = (4.0/5)*1023;
 unsigned long previousMillisBatt = 0;
+int now = 0;
 
 void setup() {
   // put your setup code here, to run once:
@@ -33,24 +34,40 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   //Serial.println(digitalRead(BUTTON_PIN));
-  debounce();
+  debounce2();
   detect_press();
   shine_LED();
   battery_life();
 }
 
 void detect_button(){
-  
+    // NO PRINT STATEMENTS
     button = true;
-    //Serial.print(millis()-lastButtonTime);
-    
-  
-  
-  //Serial.print(button);
 }
 
 void debounce(){
-  if ((millis() - lastButtonTime) < debounceTime){
+//  if(button == true){
+//    Serial.print("Int!");
+//    Serial.print(millis());
+//  }
+  now = millis();
+  if ((now - lastButtonTime) < debounceTime){
+    button = false;
+    //Serial.print(millis() - lastButtonTime);
+    //Serial.print("Debounce!");
+  }
+  else{
+    lastButtonTime = millis();
+    //Serial.print("Press!");
+  }
+  //Serial.print(button);
+}
+
+void debounce2(){
+  if(button == true){
+    now = millis();
+  }
+  if((now - lastButtonTime) < debounceTime){
     button = false;
   }
   else{
@@ -61,12 +78,12 @@ void debounce(){
 void detect_press() {
   if (button == true) {
     mode += 1;
-    //Serial.print(mode);
+    Serial.print(mode);
     button = false;
   }
   if (mode == 6) {
     mode = 1;
-    //Serial.print(mode);
+    Serial.print(mode);
   }
 }
 
@@ -103,7 +120,6 @@ void shine_LED() {
 
 void battery_life() {
   int batteryVolt = analogRead(BATTERY_READ_PIN); 
-  
   unsigned long currentMillisBatt = millis();
   
   if(float(batteryVolt) <= medBatteryVolt && float(batteryVolt) > lowBatteryVolt){
